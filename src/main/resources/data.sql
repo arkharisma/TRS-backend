@@ -1,5 +1,6 @@
 INSERT INTO `roles` (`id`, `name`) VALUES
 ('8sk27hdk-281j-28da-9hka-719sha82k01s', 'ROLE_ADMIN'),
+('9812jiha-992j-981c-7jsd-sda8h238sa2k', 'ROLE_MODERATOR'),
 ('9ba045f8-d51b-415a-b5c3-bb287acc72dc', 'ROLE_USER');
 
 INSERT INTO `user` (`id`, `first_name`, `last_name`, `mobile_number`, `password`, `username`) VALUES

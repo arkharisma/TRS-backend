@@ -12,4 +12,6 @@ import com.finalproject.backend.models.transportation.Trip;
 public interface TripRepository extends JpaRepository<Trip, String> {
     @Query(value = "SELECT DISTINCT * FROM trip WHERE source_stop_id = :sourceStop AND dest_stop_id = :destStop", nativeQuery = true)
     List<Trip> findTripsByStops(String sourceStop, String destStop);
+
+    List<Trip> findByAgencyId(String agency_id);
 }

@@ -11,10 +11,13 @@ import com.finalproject.backend.payload.request.BusRequest;
 import com.finalproject.backend.payload.response.MessageResponse;
 import com.finalproject.backend.repository.AgencyRepository;
 import com.finalproject.backend.repository.BusRepository;
+import com.finalproject.backend.security.services.UserDetailsImpl;
+import com.finalproject.backend.service.TokenHolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +40,8 @@ public class BusController {
 
 	@Autowired
 	AgencyRepository agencyRepository;
+
+	TokenHolder tokenHolder = new TokenHolder();
 	
 	@GetMapping("/")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
@@ -87,7 +92,7 @@ public class BusController {
 			
 			result = "Success Deleting Data with Id: " + id;
             busRepository.deleteById(id);
-
+			
             return ResponseEntity.ok(new MessageResponse<Bus>(true, result));
 		} catch(Exception e) {
 			result = "Data with Id: " + id + " Not Found";
@@ -99,12 +104,33 @@ public class BusController {
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
     @PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> getBusById(@PathVariable(value="id") String id){
-        Bus bus = busRepository.findById(id).get();
+		Bus bus = busRepository.findById(id).get();
 		if(bus == null) {
 			return ResponseEntity.notFound().build();
 		} else {
 			BusRequest dataResult = new BusRequest(bus.getId(), bus.getCapacity(), bus.getCode(), bus.getMake(), bus.getAgency().getId());
             return ResponseEntity.ok(new MessageResponse<BusRequest>(true, "Success Retrieving Data", dataResult));
 		}
+	}
+
+	@GetMapping("/list/user")
+	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+	public ResponseEntity<?> getBusByOwnerId(){
+		List<BusRequest> dataArrResult = new ArrayList<>();
+		String id_agency = agencyRepository.findByOwnerId(tokenHolder.getIdUserFromToken()).getId();
+		// List<Bus> busArr = busRepository.findByAgencyId(id_agency);
+		for(Bus dataArr : busRepository.findByAgencyId(id_agency)){
+			dataArrResult.add(new BusRequest(dataArr.getId(), dataArr.getCapacity(), dataArr.getCode(), dataArr.getMake(), dataArr.getAgency().getId()));
+		}
+        return ResponseEntity.ok(new MessageResponse<BusRequest>(true, "Success Retrieving Data", dataArrResult));
+	}
+	
+	@PostMapping("/add/user")
+	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> addBusByUser(@Valid @RequestBody BusRequest busRequest) {
+		Agency agency = agencyRepository.findByOwnerId(tokenHolder.getIdUserFromToken());
+		Bus bus = new Bus(busRequest.getCode(), busRequest.getCapacity(), busRequest.getMake(), agency);
+		return ResponseEntity.ok(new MessageResponse<Bus>(true, "Success Adding Data", busRepository.save(bus)));
 	}
 }

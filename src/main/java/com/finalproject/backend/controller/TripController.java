@@ -9,12 +9,14 @@ import com.finalproject.backend.models.transportation.Agency;
 import com.finalproject.backend.models.transportation.Bus;
 import com.finalproject.backend.models.transportation.Stop;
 import com.finalproject.backend.models.transportation.Trip;
+import com.finalproject.backend.payload.request.AddTripRequest;
 import com.finalproject.backend.payload.request.TripRequest;
 import com.finalproject.backend.payload.response.MessageResponse;
 import com.finalproject.backend.repository.AgencyRepository;
 import com.finalproject.backend.repository.BusRepository;
 import com.finalproject.backend.repository.StopRepository;
 import com.finalproject.backend.repository.TripRepository;
+import com.finalproject.backend.service.TokenHolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +49,8 @@ public class TripController {
 
 	@Autowired
 	StopRepository stopRepository;
+
+	TokenHolder tokenHolder = new TokenHolder();
 	
 	@GetMapping("/")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
@@ -64,6 +68,18 @@ public class TripController {
     @PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> addTrip(@Valid @RequestBody TripRequest tripRequest) {
 		Agency agency = agencyRepository.findById(tripRequest.getAgency()).get();
+		Bus bus = busRepository.findById(tripRequest.getBus()).get();
+		Stop sourceStop = stopRepository.findById(tripRequest.getSourceStop()).get();
+		Stop destStop = stopRepository.findById(tripRequest.getDestStop()).get();
+		Trip trip  = new Trip(tripRequest.getFare(), tripRequest.getJourney_time(), sourceStop, destStop, bus, agency);
+        return ResponseEntity.ok(new MessageResponse<Trip>(true, "Success Adding Data", tripRepository.save(trip)));
+	}
+
+	@PostMapping("/user")
+	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    @PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> addTripByUser(@Valid @RequestBody AddTripRequest tripRequest) {
+		Agency agency = agencyRepository.findByOwnerId(tokenHolder.getIdUserFromToken());
 		Bus bus = busRepository.findById(tripRequest.getBus()).get();
 		Stop sourceStop = stopRepository.findById(tripRequest.getSourceStop()).get();
 		Stop destStop = stopRepository.findById(tripRequest.getDestStop()).get();
@@ -124,5 +140,13 @@ public class TripController {
 			TripRequest dataResult = new TripRequest(trip.getId(), trip.getFare(), trip.getJourneyTime(), trip.getAgency().getId(), trip.getBus().getId(), trip.getSourceStop().getId(), trip.getDestStop().getId());
             return ResponseEntity.ok(new MessageResponse<TripRequest>(true, "Success Retrieving Data", dataResult));
 		}
+	}
+
+	@GetMapping("/list/user")
+	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+	public ResponseEntity<?> getTripByOwnerId(){
+		String id_agency = agencyRepository.findByOwnerId(tokenHolder.getIdUserFromToken()).getId();
+		List<Trip> tripArr = tripRepository.findByAgencyId(id_agency);
+        return ResponseEntity.ok(new MessageResponse<Trip>(true, "Success Retrieving Data", tripArr));
 	}
 }

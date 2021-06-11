@@ -7,4 +7,5 @@ import com.finalproject.backend.models.transportation.Agency;
 
 @Repository
 public interface AgencyRepository extends JpaRepository<Agency, String> {
+    Agency findByOwnerId(String owner_id);
 }

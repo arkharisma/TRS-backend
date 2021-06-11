@@ -19,7 +19,8 @@ public class BusRequest {
 	@NotBlank
 	private String make;
 
-	@NotBlank
+	@ApiModelProperty(hidden = true)
+	// @NotBlank
 	private String agency;
 
 	public BusRequest() {

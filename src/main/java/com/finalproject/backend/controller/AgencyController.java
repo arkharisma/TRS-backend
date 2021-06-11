@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import com.finalproject.backend.models.transportation.Agency;
 import com.finalproject.backend.models.user.User;
 import com.finalproject.backend.payload.request.AgencyRequest;
+import com.finalproject.backend.payload.request.UpdateAgencyRequest;
 import com.finalproject.backend.payload.response.MessageResponse;
 import com.finalproject.backend.repository.AgencyRepository;
 import com.finalproject.backend.repository.UserRepository;
@@ -61,16 +62,13 @@ public class AgencyController {
 	@PutMapping("/{id}")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
     @PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> updateAgency(@PathVariable(value="id") String id, @Valid @RequestBody AgencyRequest agencyDetail){
-		Agency agency = agencyRepository.findById(id).get();
-		User user = userRepository.findById(agencyDetail.getOwner()).get();
+	public ResponseEntity<?> updateAgency(@PathVariable(value="id") String id, @Valid @RequestBody UpdateAgencyRequest agencyDetail){
+		Agency agency = agencyRepository.findByOwnerId(id);
 		if(agency == null) {
 			return ResponseEntity.notFound().build();
 		}
-        agency.setCode(agencyDetail.getCode());
         agency.setDetails(agencyDetail.getDetails());
         agency.setName(agencyDetail.getName());
-        agency.setOwner(user);
 
         Agency updatedAgency = agencyRepository.save(agency);
 
@@ -104,6 +102,19 @@ public class AgencyController {
 			return ResponseEntity.notFound().build();
 		} else {
 			AgencyRequest dataResult = new AgencyRequest(agency.getId(), agency.getCode(), agency.getName(), agency.getDetails(), agency.getOwner().getId());
+            return ResponseEntity.ok(new MessageResponse<AgencyRequest>(true, "Success Retrieving Data", dataResult));
+		}
+	}
+
+	@GetMapping("/user/{id}")
+	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    @PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> getAgencyByUserId(@PathVariable(value="id") String id){
+        Agency agency = agencyRepository.findByOwnerId(id);
+		if(agency == null) {
+			return ResponseEntity.notFound().build();
+		} else {
+			AgencyRequest dataResult = new AgencyRequest(agency.getId(), agency.getCode(), agency.getName(), agency.getDetails(), id);
             return ResponseEntity.ok(new MessageResponse<AgencyRequest>(true, "Success Retrieving Data", dataResult));
 		}
 	}
