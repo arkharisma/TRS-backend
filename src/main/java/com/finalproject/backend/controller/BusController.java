@@ -11,13 +11,11 @@ import com.finalproject.backend.payload.request.BusRequest;
 import com.finalproject.backend.payload.response.MessageResponse;
 import com.finalproject.backend.repository.AgencyRepository;
 import com.finalproject.backend.repository.BusRepository;
-import com.finalproject.backend.security.services.UserDetailsImpl;
 import com.finalproject.backend.service.TokenHolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
