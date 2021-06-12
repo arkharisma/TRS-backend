@@ -12,6 +12,7 @@ import com.finalproject.backend.payload.request.UpdateAgencyRequest;
 import com.finalproject.backend.payload.response.MessageResponse;
 import com.finalproject.backend.repository.AgencyRepository;
 import com.finalproject.backend.repository.UserRepository;
+import com.finalproject.backend.service.TokenHolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,8 @@ public class AgencyController {
 
 	@Autowired
 	UserRepository userRepository;
+
+	TokenHolder tokenHolder;
 	
 	@GetMapping("/")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
@@ -59,11 +62,11 @@ public class AgencyController {
         return ResponseEntity.ok(new MessageResponse<Agency>(true, "Success Adding Data", agencyRepository.save(agency)));
 	}
 	
-	@PutMapping("/{id}")
+	@PutMapping("/")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
     @PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> updateAgency(@PathVariable(value="id") String id, @Valid @RequestBody UpdateAgencyRequest agencyDetail){
-		Agency agency = agencyRepository.findByOwnerId(id);
+	public ResponseEntity<?> updateAgency(@Valid @RequestBody UpdateAgencyRequest agencyDetail){
+		Agency agency = agencyRepository.findByOwnerId(tokenHolder.getIdUserFromToken());
 		if(agency == null) {
 			return ResponseEntity.notFound().build();
 		}
@@ -106,15 +109,15 @@ public class AgencyController {
 		}
 	}
 
-	@GetMapping("/user/{id}")
+	@GetMapping("/user")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
     @PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> getAgencyByUserId(@PathVariable(value="id") String id){
-        Agency agency = agencyRepository.findByOwnerId(id);
+	public ResponseEntity<?> getAgencyByUserId(){
+        Agency agency = agencyRepository.findByOwnerId(tokenHolder.getIdUserFromToken());
 		if(agency == null) {
 			return ResponseEntity.notFound().build();
 		} else {
-			AgencyRequest dataResult = new AgencyRequest(agency.getId(), agency.getCode(), agency.getName(), agency.getDetails(), id);
+			AgencyRequest dataResult = new AgencyRequest(agency.getId(), agency.getCode(), agency.getName(), agency.getDetails(), tokenHolder.getIdUserFromToken());
             return ResponseEntity.ok(new MessageResponse<AgencyRequest>(true, "Success Retrieving Data", dataResult));
 		}
 	}
