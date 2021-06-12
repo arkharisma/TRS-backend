@@ -40,7 +40,7 @@ public class AgencyController {
 	@Autowired
 	UserRepository userRepository;
 
-	TokenHolder tokenHolder;
+	TokenHolder tokenHolder = new TokenHolder();
 	
 	@GetMapping("/")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
