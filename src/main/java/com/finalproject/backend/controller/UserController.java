@@ -169,6 +169,19 @@ public class UserController {
 		}
 	}
 
+	@GetMapping("/user")
+	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    @PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> getUserById(){
+        User user = userRepository.findById(tokenHolder.getIdUserFromToken()).get();
+		if(user == null) {
+			return ResponseEntity.notFound().build();
+		} else {
+			UserResponse dataResult = new UserResponse(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(), user.getMobileNumber());
+            return ResponseEntity.ok(new MessageResponse<UserResponse>(true, "Success Retrieving Data", dataResult));
+		}
+	}
+
 	@PutMapping("/")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
     @PreAuthorize("hasRole('ADMIN')")
