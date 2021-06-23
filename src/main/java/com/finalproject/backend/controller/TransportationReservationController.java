@@ -11,23 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-
 import com.finalproject.backend.models.transportation.Stop;
 import com.finalproject.backend.models.transportation.Ticket;
-import com.finalproject.backend.models.transportation.Trip;
 import com.finalproject.backend.models.transportation.TripSchedule;
 import com.finalproject.backend.models.user.User;
 import com.finalproject.backend.payload.request.TicketRequest;
-import com.finalproject.backend.payload.request.TripRequest;
-import com.finalproject.backend.payload.request.TripScheduleRequest;
 import com.finalproject.backend.payload.response.BookingTicketResponse;
 import com.finalproject.backend.payload.response.MessageResponse;
 import com.finalproject.backend.payload.response.TripClientResponse;
