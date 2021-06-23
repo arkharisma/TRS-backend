@@ -9,6 +9,8 @@ public class TripClientResponse {
 	private String trip_date;
 	private String available_seats;
 	private Integer fare;
+	private String source_stop;
+	private String dest_stop;
 	private String journey_time;
     private String agency_name;
     private String bus_code;
@@ -16,12 +18,14 @@ public class TripClientResponse {
 	public TripClientResponse() {
 	}
 
-	public TripClientResponse(String id, String trip_date, String available_seats, Integer fare, String journey_time,
+	public TripClientResponse(String id, String trip_date, String available_seats, Integer fare, String source_stop, String dest_stop, String journey_time,
 			String agency_name, String bus_code) {
 		this.id = id;
 		this.trip_date = trip_date;
 		this.available_seats = available_seats;
 		this.fare = fare;
+		this.source_stop = source_stop;
+		this.dest_stop = dest_stop;
 		this.journey_time = journey_time;
 		this.agency_name = agency_name;
 		this.bus_code = bus_code;
@@ -81,5 +85,21 @@ public class TripClientResponse {
 
 	public void setBus_code(String bus_code) {
 		this.bus_code = bus_code;
+	}
+
+	public String getSource_stop() {
+		return source_stop;
+	}
+
+	public void setSource_stop(String source_stop) {
+		this.source_stop = source_stop;
+	}
+
+	public String getDest_stop() {
+		return dest_stop;
+	}
+
+	public void setDest_stop(String dest_stop) {
+		this.dest_stop = dest_stop;
 	}
 }

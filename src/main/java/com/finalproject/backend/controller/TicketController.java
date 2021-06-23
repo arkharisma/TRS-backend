@@ -10,9 +10,11 @@ import com.finalproject.backend.models.transportation.TripSchedule;
 import com.finalproject.backend.models.user.User;
 import com.finalproject.backend.payload.request.TicketRequest;
 import com.finalproject.backend.payload.response.MessageResponse;
+import com.finalproject.backend.payload.response.TicketResponse;
 import com.finalproject.backend.repository.TicketRepository;
 import com.finalproject.backend.repository.TripScheduleRepository;
 import com.finalproject.backend.repository.UserRepository;
+import com.finalproject.backend.service.TokenHolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +44,8 @@ public class TicketController {
 
 	@Autowired
 	TripScheduleRepository tripScheduleRepository;
+
+	TokenHolder tokenHolder = new TokenHolder();
 	
 	@GetMapping("/")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
@@ -105,14 +109,21 @@ public class TicketController {
 	
 	@GetMapping("/{id}")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> getTicketById(@PathVariable(value="id") String id){
         Ticket ticket = ticketRepository.findById(id).get();
-		if(ticket == null) {
-			return ResponseEntity.notFound().build();
-		} else {
-			TicketRequest dataResult = new TicketRequest(ticket.getId(), ticket.getCancellable(), ticket.getJourneyDate(), ticket.getSeatNumber(), ticket.getPassenger().getId(), ticket.getTripSchedule().getId());
-            return ResponseEntity.ok(new MessageResponse<TicketRequest>(true, "Success Retrieving Data", dataResult));
+		TicketResponse dataResult = new TicketResponse(ticket.getId(), ticket.getCancellable(), ticket.getJourneyDate(), ticket.getSeatNumber(), ticket.getPassenger().getId(), ticket.getTripSchedule());
+		return ResponseEntity.ok(new MessageResponse<TicketResponse>(true, "Success Retrieving Data", dataResult));
+	}
+
+	@GetMapping("/user")
+	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    @PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> getTicketByUserToken(){
+		List<TicketResponse> dataArrResult = new ArrayList<>() ;
+		for(Ticket dataArr : ticketRepository.findByPassengerId(tokenHolder.getIdUserFromToken())){
+			dataArrResult.add(new TicketResponse(dataArr.getId(), dataArr.getCancellable(), dataArr.getJourneyDate(), dataArr.getSeatNumber(), dataArr.getPassenger().getId(), dataArr.getTripSchedule()));
 		}
+        return ResponseEntity.ok(new MessageResponse<TicketResponse>(true, "Success Retrieving Data", dataArrResult));
 	}
 }

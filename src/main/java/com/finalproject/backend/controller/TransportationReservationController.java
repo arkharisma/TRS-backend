@@ -28,6 +28,7 @@ import com.finalproject.backend.models.user.User;
 import com.finalproject.backend.payload.request.TicketRequest;
 import com.finalproject.backend.payload.request.TripRequest;
 import com.finalproject.backend.payload.request.TripScheduleRequest;
+import com.finalproject.backend.payload.response.BookingTicketResponse;
 import com.finalproject.backend.payload.response.MessageResponse;
 import com.finalproject.backend.payload.response.TripClientResponse;
 import com.finalproject.backend.repository.ReservationRepository;
@@ -91,6 +92,8 @@ public class TransportationReservationController {
         User user = userRepository.findById(ticketRequest.getPassenger()).get();
         TripSchedule tripSchedule = tripScheduleRepository.findById(ticketRequest.getTrip_schedule()).get();
         Ticket ticket = new Ticket(ticketRequest.getSeat_number(), ticketRequest.getCancellable(), ticketRequest.getJourney_date(), user, tripSchedule);
-        return ResponseEntity.ok(new MessageResponse<Ticket>(true, "Success Retrieving Data", ticketRepository.save(ticket)));
+        ticketRepository.save(ticket);
+        BookingTicketResponse book = new BookingTicketResponse(ticket.getId());
+        return ResponseEntity.ok(new MessageResponse<BookingTicketResponse>(true, "Success Retrieving Data", book));
     }
 }

@@ -30,8 +30,8 @@ INSERT INTO `stop` (`id`, `code`, `detail`, `name`) VALUES
 ('f69ed925-4c31-488c-b3e8-34f1da0b5f5c', 'ACH', 'Banda Aceh, Nanggroe Aceh Darussalam', 'Banda Aceh');
 
 INSERT INTO `trip` (`id`, `fare`, `journey_time`, `agency_id`, `bus_id`, `dest_stop_id`, `source_stop_id`) VALUES
-('16cb2f9e-b463-4bef-9867-5fc5d172433d', 1, '08.08', 'f425a8fe-55a9-4a12-9496-190cd079bfaa', 'f6fd1a73-86af-459c-abe0-987bee6802f7', 'f69ed925-4c31-488c-b3e8-34f1da0b5f5c', '2d068769-cc3d-4557-b9fb-67923bd8b9aa'),
-('4de718c2-8795-43d2-86f9-a3f8b3db3a47', 1, '08.00', 'f425a8fe-55a9-4a12-9496-190cd079bfaa', 'f6fd1a73-86af-459c-abe0-987bee6802f7', '2d068769-cc3d-4557-b9fb-67923bd8b9aa', '24abac39-fb59-488d-a93c-5cb8b331a764');
+('16cb2f9e-b463-4bef-9867-5fc5d172433d', 100000, '08.08', 'f425a8fe-55a9-4a12-9496-190cd079bfaa', 'f6fd1a73-86af-459c-abe0-987bee6802f7', 'f69ed925-4c31-488c-b3e8-34f1da0b5f5c', '2d068769-cc3d-4557-b9fb-67923bd8b9aa'),
+('4de718c2-8795-43d2-86f9-a3f8b3db3a47', 80000, '08.00', 'f425a8fe-55a9-4a12-9496-190cd079bfaa', 'f6fd1a73-86af-459c-abe0-987bee6802f7', '2d068769-cc3d-4557-b9fb-67923bd8b9aa', '24abac39-fb59-488d-a93c-5cb8b331a764');
 
 INSERT INTO `trip_schedule` (`id`, `available_seats`, `trip_date`, `trip_detail_id`) VALUES
 ('81f99e6d-2b24-42d5-aa85-5374f750fb70', 25, '31/12/2021', '16cb2f9e-b463-4bef-9867-5fc5d172433d');

@@ -158,7 +158,7 @@ public class UserController {
 
 	@GetMapping("/{id}")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> getUserById(@PathVariable(value="id") String id){
         User user = userRepository.findById(id).get();
 		if(user == null) {
@@ -171,7 +171,7 @@ public class UserController {
 
 	@GetMapping("/user")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> getUserById(){
         User user = userRepository.findById(tokenHolder.getIdUserFromToken()).get();
 		if(user == null) {
@@ -184,7 +184,7 @@ public class UserController {
 
 	@PutMapping("/")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> updateUser(@Valid @RequestBody UserRequest userDetail){
 		User user = userRepository.findById(tokenHolder.getIdUserFromToken()).get();
 		if(user == null) {
@@ -201,7 +201,7 @@ public class UserController {
 
 	@PutMapping("/changepassword")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest passwordRequest){
 		User user = userRepository.findById(tokenHolder.getIdUserFromToken()).get();
 		if(user == null) {

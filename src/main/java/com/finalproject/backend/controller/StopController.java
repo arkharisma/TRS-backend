@@ -32,7 +32,7 @@ public class StopController {
 	
 	@GetMapping("/")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> getAll(){
         return ResponseEntity.ok(new MessageResponse<Stop>(true, "Success Retrieving Data", stopRepository.findAll()));
 	}
@@ -81,7 +81,7 @@ public class StopController {
 	
 	@GetMapping("/{id}")
 	@ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> getStopById(@PathVariable(value="id") String id){
         Stop stop = stopRepository.findById(id).get();
 		if(stop == null) {
